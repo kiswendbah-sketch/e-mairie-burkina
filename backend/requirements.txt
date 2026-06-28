@@ -1,0 +1,4 @@
+Flask
+flask-bcrypt
+werkzeug
+flask-login
