@@ -1,6 +1,6 @@
 function chargerDemandes(){
 
-fetch("http://127.0.0.1:5000/admin/demandes")
+fetch("http://e-mairie-burkina.onrender.com/admin/demandes")
 
 .then(res=>res.json())
 
@@ -33,7 +33,7 @@ document.getElementById("liste").innerHTML = affichage;
 
 function chargerDemandes(){
 
-fetch("http://127.0.0.1:5000/admin/demandes")
+fetch("http://e-mairie-burkina.onrender.com/admin/demandes")
 
 .then(res => res.json())
 
@@ -76,7 +76,7 @@ document.getElementById("liste").innerHTML = affichage;
 
 function changerStatut(id, statut){
 
-fetch("http://127.0.0.1:5000/admin/modifier_statut", {
+fetch("http://e-mairie-burkina.onrender.com/admin/modifier_statut", {
 
 method: "POST",
 

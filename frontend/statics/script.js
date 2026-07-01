@@ -15,7 +15,7 @@ function inscrire() {
         return;
     }
 
-    fetch("http://127.0.0.1:5000/inscription", {
+    fetch("http://e-mairie-burkina.onrender.com/inscription", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -50,7 +50,7 @@ function login() {
         return;
     }
 
-    fetch("http://127.0.0.1:5000/connexion", {
+    fetch("http://e-mairie-burkina.onrender.com/connexion", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -89,7 +89,7 @@ function envoyerDemande() {
         return;
     }
 
-    fetch("http://127.0.0.1:5000/demande", {
+    fetch("http://e-mairie-burkina.onrender.com/demande", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
