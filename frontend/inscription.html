@@ -1,21 +1,27 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription citoyen</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="../style.css">
 </head>
-<body>
-    <div class="container">
-        <h2>Créer un compte citoyen</h2>
-        <input id="nom" placeholder="Nom" />
-        <input id="email" placeholder="Email" />
-        <input id="motdepasse" type="password" placeholder="Mot de passe" />
-        <button onclick="inscrire()">S'inscrire</button>
-        <p id="message"></p>
-    </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+<body>
+
+<h1>Créer un compte citoyen</h1>
+
+<form id="registerForm">
+
+<input type="text" id="nom" placeholder="Nom complet" required>
+
+<input type="email" id="email" placeholder="Email" required>
+
+<input type="password" id="password" placeholder="Mot de passe" required>
+
+<button type="submit">S'inscrire</button>
+
+</form>
+
+<script src="../script.js"></script>
+
 </body>
 </html>

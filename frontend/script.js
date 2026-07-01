@@ -113,3 +113,46 @@ function envoyerDemande() {
         afficherMessage("message", error.message || "Impossible de joindre le serveur.");
     });
 }
+
+document.getElementById("registerForm").addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    let nom = document.getElementById("nom").value;
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
+
+    fetch("https://e-mairie-burkina.onrender.com/register", {
+
+        method: "POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body: JSON.stringify({
+            nom: nom,
+            email: email,
+            password: password
+        })
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        alert(data.message);
+
+    })
+
+    .catch(error => {
+
+        console.log(error);
+
+        alert("Erreur de connexion");
+
+    });
+
+});
