@@ -1,4 +1,6 @@
+
 from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 import sqlite3
 import os
@@ -9,6 +11,7 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, 'frontend', 'templates')
 STATICS_DIR = os.path.join(BASE_DIR, 'frontend', 'statics')
 
 app = Flask(__name__, static_folder=STATICS_DIR, template_folder=TEMPLATES_DIR)
+CORS(app)
 app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(__file__), 'uploads')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
@@ -243,6 +246,20 @@ def statistiques():
         "refusees": refusees
     })
 
+@app.route("/register", methods=["POST"])
+def register():
+
+    data = request.json
+
+    nom = data["nom"]
+    email = data["email"]
+    password = data["password"]
+
+    return {
+        "message": "Compte créé avec succès",
+        "nom": nom,
+        "email": email
+    }
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
