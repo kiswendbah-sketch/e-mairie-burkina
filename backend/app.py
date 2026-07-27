@@ -1,5 +1,5 @@
 
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, request, jsonify, render_template, send_from_directory, session, redirect
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 import sqlite3
@@ -11,12 +11,15 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, 'frontend', 'templates')
 STATICS_DIR = os.path.join(BASE_DIR, 'frontend', 'statics')
 
 app = Flask(__name__, static_folder=STATICS_DIR, template_folder=TEMPLATES_DIR)
+app.secret_key = "e-Mairie-Burkina-2026"
+
 CORS(app)
 app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(__file__), 'uploads')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 bcrypt = Bcrypt(app)
 
+print("Administrateur créé.")
 
 @app.after_request
 def after_request(response):
@@ -28,22 +31,26 @@ def after_request(response):
 
 @app.route('/')
 def accueil():
-    return "e-Mairie Burkina fonctionne !"
+    return render_template("mairie.html")
 
 
 def get_db():
-    return sqlite3.connect(os.path.join(BASE_DIR, 'mairie.db'))
+    chemin = os.path.join(BASE_DIR, 'mairie.db')
+    print(chemin)
+    return sqlite3.connect(chemin)
 
 
-@app.route('/inscription', methods=['POST', 'OPTIONS'])
+@app.route('/inscription', methods=['GET', 'POST', 'OPTIONS'])
 def inscription():
+    if request.method == 'GET':
+        return render_template("inscription.html")
     if request.method == 'OPTIONS':
         return '', 200
 
     data = request.get_json(silent=True) or {}
-    nom = (data.get('nom') or '').strip()
-    email = (data.get('email') or '').strip()
-    mot_de_passe = (data.get('mot_de_passe') or '').strip()
+    nom = data.get('nom', '').strip()
+    email = data.get('email', '').strip()
+    mot_de_passe = data.get('mot_de_passe', '').strip()
 
     if not nom or not email or not mot_de_passe:
         return jsonify({'message': 'Veuillez remplir tous les champs'}), 400
@@ -59,8 +66,10 @@ def inscription():
     return jsonify({'message': 'Citoyen enregistré'})
 
 
-@app.route('/connexion', methods=['POST', 'OPTIONS'])
+@app.route('/connexion', methods=['GET', 'POST', 'OPTIONS'])
 def connexion():
+    if request.method == 'GET':
+        return render_template("login.html")
     if request.method == 'OPTIONS':
         return '', 200
 
@@ -91,6 +100,7 @@ def ajouter_demande():
     data = request.get_json(silent=True) or {}
     citoyen_id = data.get('citoyen_id')
     type_demande = (data.get('type_demande') or '').strip()
+
 
     if not citoyen_id or not type_demande:
         return jsonify({'message': 'Veuillez remplir tous les champs'}), 400
@@ -135,15 +145,42 @@ def uploaded_file(filename):
 
 @app.route('/admin/demandes')
 def voir_demandes():
+    if 'admin' not in session:
+        return redirect('/admin/login')
     db = get_db()
     c = db.cursor()
-    c.execute('''
-        SELECT demandes.id, citoyens.nom, demandes.type_demande, demandes.statut, demandes.document
-        FROM demandes JOIN citoyens ON demandes.citoyen_id = citoyens.id
-    ''')
-    rows = c.fetchall()
+
+    c.execute("""
+        SELECT demandes.id,
+               citoyens.nom,
+               demandes.type_demande,
+               demandes.statut,
+               demandes.document
+        FROM demandes
+        JOIN citoyens ON demandes.citoyen_id = citoyens.id
+    """)
+
+    demandes = c.fetchall()
     db.close()
-    return jsonify(rows)
+
+    return render_template("admin.html", demandes=demandes)
+
+@app.route("/admin/supprimer/<int:id>", methods=["POST"])
+def supprimer_demande(id):
+    db = get_db()
+    c = db.cursor()
+
+    c.execute("DELETE FROM demandes WHERE id = ?", (id,))
+
+    db.commit()
+    db.close()
+
+    return jsonify({"message": "Demande supprimée avec succès"})
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin', None)
+    return redirect('/admin/login')
 
 
 @app.route('/admin/modifier_statut', methods=['POST'])
@@ -151,6 +188,15 @@ def modifier_statut():
     data = request.get_json(silent=True) or {}
     demande_id = data.get('demande_id')
     statut = data.get('statut')
+    
+    db = get_db()
+    c = db.cursor()
+
+    c.execute("UPDATE demandes SET statut = ? WHERE id = ?", (statut, demande_id))
+    db.commit()
+    db.close()
+
+    return jsonify({'message': 'Statut mis à jour'})
 
     if not demande_id or statut is None:
         return jsonify({'message': 'Paramètres manquants'}), 400
@@ -163,53 +209,41 @@ def modifier_statut():
 
     return jsonify({'message': 'Statut mis à jour'})
 
-
 @app.route("/demande_document", methods=["POST"])
 def demande_document():
 
-    citoyen_id = request.form["citoyen_id"]
-    type_demande = request.form["type_demande"]
+    citoyen_id = request.form.get("citoyen_id")
+    type_demande = request.form.get("type_demande")
+    fichier = request.files.get("document")
 
-    fichier = request.files["document"]
+    print("citoyen_id =", citoyen_id)
+    print("type_demande =", type_demande)
+    print("fichier =", fichier)
 
-    chemin = os.path.join(
-        app.config["UPLOAD_FOLDER"],
-        fichier.filename
-    )
+    if not citoyen_id or not type_demande or not fichier:
+        return jsonify({"message": "Veuillez remplir tous les champs"}), 400
 
-    fichier.save(chemin)
+    filename = secure_filename(fichier.filename)
+    fichier.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
+    db = get_db()
+    c = db.cursor()
 
-    db = sqlite3.connect("mairie.db")
-    curseur = db.cursor()
-
-    curseur.execute(
-    """
-    INSERT INTO demandes
-    (citoyen_id, type_demande, statut, document)
-    VALUES (?, ?, ?, ?)
-    """,
-    (
-        citoyen_id,
-        type_demande,
-        "En attente",
-        fichier.filename
-    )
-    )
+    c.execute("""
+        INSERT INTO demandes (citoyen_id, type_demande, statut, document)
+        VALUES (?, ?, ?, ?)
+    """, (citoyen_id, type_demande, "En attente", filename))
 
     db.commit()
     db.close()
 
-
-    return jsonify({
-        "message":"Demande envoyée avec document"
-    })
+    return jsonify({"message": "Demande envoyée avec succès"})
 
 
 @app.route("/admin/statistiques")
 def statistiques():
 
-    db = sqlite3.connect("mairie.db")
+    db = get_db()
     curseur = db.cursor()
 
     curseur.execute(
@@ -246,20 +280,53 @@ def statistiques():
         "refusees": refusees
     })
 
-@app.route("/register", methods=["POST"])
-def register():
+@app.route("/espace")
+def espace():
+    return render_template("espace.html")
 
-    data = request.json
+@app.route("/admin/login", methods=["GET", "POST"])
+def admin_login():
+    if request.method == "GET":
+        return render_template("admin_login.html")
 
-    nom = data["nom"]
-    email = data["email"]
-    password = data["password"]
+    data = request.get_json()
 
-    return {
-        "message": "Compte créé avec succès",
-        "nom": nom,
-        "email": email
-    }
+    username = data["username"]
+    mot_de_passe = data["mot_de_passe"]
+
+    db = get_db()
+    c = db.cursor()
+
+    c.execute("SELECT * FROM admin WHERE username=?", (username,))
+    admin = c.fetchone()
+    db.close()
+
+    if admin and admin[2] == mot_de_passe:
+        session["admin"] = username
+        return jsonify({"message": "Connexion réussie"})
+
+    return jsonify({"message": "Identifiants incorrects"}), 401
+
+@app.route("/mes_demandes/<int:citoyen_id>")
+def mes_demandes(citoyen_id):
+
+    db = get_db()
+    c = db.cursor()
+
+    c.execute("""
+        SELECT id, type_demande, statut, document
+        FROM demandes
+        WHERE citoyen_id = ?
+    """, (citoyen_id,))
+
+    demandes = c.fetchall()
+    db.close()
+
+    return jsonify(demandes)
+
+@app.route("/mes_demandes")
+def page_mes_demandes():
+    return render_template("mes_demandes.html")
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
