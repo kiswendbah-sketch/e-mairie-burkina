@@ -15,7 +15,7 @@ function login() {
         return;
     }
 
-    fetch("http://e-mairie-burkina.onrender.com/connexion", {
+    fetch("/connexion", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

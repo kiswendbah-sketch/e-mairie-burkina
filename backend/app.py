@@ -5,6 +5,7 @@ from flask_bcrypt import Bcrypt
 import sqlite3
 import os
 from werkzeug.utils import secure_filename
+import database
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'frontend', 'templates')
@@ -19,7 +20,7 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 bcrypt = Bcrypt(app)
 
-print("Administrateur créé.")
+database.creer_administrateur()
 
 @app.after_request
 def after_request(response):
