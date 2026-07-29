@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inscription citoyen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='mairie.css') }}">
+</head>
+
+<body>
+
+<h1>Créer un compte citoyen</h1>
+
+<form id="registerForm">
+
+<input type="text"
+       id="nom"
+       name="nom"
+       placeholder="Nom complet"
+       required>
+
+<input type="email"
+       id="email"
+       name="email"
+       placeholder="Email"
+       required>
+
+<input type="password"
+       id="password"
+       name="mot_de_passe"
+       placeholder="Mot de passe"
+       required>
+
+<button type="submit">S'inscrire</button>
+
+</form>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

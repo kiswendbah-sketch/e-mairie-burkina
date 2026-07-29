@@ -3,34 +3,38 @@
 
 <head>
 <title>Espace citoyen</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='mairie.css') }}">
 </head>
 
 <body>
 
 <h2>Mes démarches</h2>
 
-<select id="demande">
+<form id="demandeForm" enctype="multipart/form-data">
 
-<option>Acte de naissance</option>
-<option>Certificat de résidence</option>
-<option>Demande d'information</option>
+    <select id="demande" name="type_demande">
+        <option>Acte de naissance</option>
+        <option>Certificat de résidence</option>
+        <option>Demande d'information</option>
+    </select>
 
-</select>
+    <br><br>
 
-<br><br>
+    <input type="file" id="document" name="document">
 
-<input type="file" id="document">
+    <br><br>
 
+    <button type="submit">Envoyer</button>
 
-<button onclick="envoyerDemande()">
-Envoyer
-</button>
-
+</form>
 
 <p id="message"></p>
 
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 
-<script src="script.js"></script>
+<a href="/mes_demandes">
+    <button class="btn btn-primary">Voir mes demandes</button>
+</a>
 
 </body>
 

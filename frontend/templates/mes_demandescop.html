@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mes demandes</title>
+    <link rel="stylesheet" href="/statics/style.css">
+</head>
+<body>
+
+    <h1>Mes demandes</h1>
+
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Document</th>
+                <th>Statut</th>
+                <th>Fichier</th>
+            </tr>
+        </thead>
+        <tbody id="listeDemandes">
+
+        </tbody>
+    </table>
+
+    <br>
+
+    <a href="/espace">
+        <button>Retour à l'espace citoyen</button>
+    </a>
+
+    <script>
+        const citoyen_id = localStorage.getItem("citoyen_id");
+
+        fetch("/mes_demandes/" + citoyen_id)
+        .then(response => response.json())
+        .then(data => {
+
+            let contenu = "";
+
+            data.forEach(d => {
+
+                let fichier = d[3]
+                    ? `<a href="/uploads/${d[3]}" target="_blank">Télécharger</a>`
+                    : "Aucun";
+
+                contenu += `
+                    <tr>
+                        <td>${d[0]}</td>
+                        <td>${d[1]}</td>
+                        <td>${d[2]}</td>
+                        <td>${fichier}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("listeDemandes").innerHTML = contenu;
+
+        })
+        .catch(error => {
+            console.log(error);
+            alert("Erreur lors du chargement des demandes.");
+        });
+    </script>
+
+</body>
+</html>

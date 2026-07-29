@@ -1,13 +1,12 @@
-<<<<<<< HEAD
+HEAD
 # Python
-=======
 # Byte-compiled / optimized / DLL files
 >>>>>>> 0c75e0a4d550657039154845895c22b035942fb3
 __pycache__/
 *.py[cod]
 *$py.class
 
-<<<<<<< HEAD
+HEAD
 # Virtual environments
 .venv/
 venv/
@@ -205,4 +204,4 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
->>>>>>> 0c75e0a4d550657039154845895c22b035942fb3
+0c75e0a4d550657039154845895c22b035942fb3
