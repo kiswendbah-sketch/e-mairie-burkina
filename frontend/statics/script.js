@@ -153,3 +153,43 @@ document.getElementById("loginForm")?.addEventListener("submit", function(e){
     });
 
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const tableau = document.getElementById("listeDemandes");
+
+    if (!tableau) return;
+
+    const citoyen_id = localStorage.getItem("citoyen_id");
+
+    if (!citoyen_id) {
+        tableau.innerHTML = "<tr><td colspan='4'>Vous n'êtes pas connecté.</td></tr>";
+        return;
+    }
+
+    fetch("/mes_demandes/" + citoyen_id)
+        .then(response => response.json())
+        .then(demandes => {
+
+            tableau.innerHTML = "";
+
+            demandes.forEach(demande => {
+
+                tableau.innerHTML += `
+                    <tr>
+                        <td>${demande[0]}</td>
+                        <td>${demande[1]}</td>
+                        <td>${demande[2]}</td>
+                        <td>${demande[3] || "Aucun document"}</td>
+                    </tr>
+                `;
+
+            });
+
+        })
+        .catch(error => {
+            console.log(error);
+            tableau.innerHTML = "<tr><td colspan='4'>Erreur de chargement.</td></tr>";
+        });
+
+});
