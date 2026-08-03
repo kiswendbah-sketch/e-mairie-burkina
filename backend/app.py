@@ -20,7 +20,7 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 bcrypt = Bcrypt(app)
 
-database.creer_administrateur()
+#database.creer_administrateur()
 
 @app.after_request
 def after_request(response):
