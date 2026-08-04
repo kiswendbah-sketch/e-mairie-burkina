@@ -34,6 +34,12 @@ try:
 except sqlite3.OperationalError:
     # La colonne existe déjà ou la table n'existe pas encore
     pass
+
+try:
+    curseur.execute("ALTER TABLE demandes ADD COLUMN notification TEXT")
+except sqlite3.OperationalError:
+    pass
+
 # table des administrateurs
 curseur.execute("""
 CREATE TABLE IF NOT EXISTS admin (

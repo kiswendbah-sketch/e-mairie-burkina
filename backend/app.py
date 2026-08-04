@@ -148,6 +148,7 @@ def uploaded_file(filename):
 def voir_demandes():
     if 'admin' not in session:
         return redirect('/admin/login')
+
     db = get_db()
     c = db.cursor()
 
@@ -162,6 +163,9 @@ def voir_demandes():
     """)
 
     demandes = c.fetchall()
+
+    print(demandes)   # <-- ajoute cette ligne
+
     db.close()
 
     return render_template("admin.html", demandes=demandes)
