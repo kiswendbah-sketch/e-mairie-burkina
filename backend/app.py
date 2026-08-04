@@ -208,11 +208,21 @@ def modifier_statut():
 
     db = get_db()
     c = db.cursor()
-    c.execute('UPDATE demandes SET statut = ? WHERE id = ?', (statut, demande_id))
+    if statut == "Acceptée":
+        notification = "Votre demande a été acceptée."
+    else:
+        notification = "Votre demande a été refusée."
+
+    c.execute("""
+    UPDATE demandes
+    SET statut = ?, notification = ?
+    WHERE id = ?
+        """, (statut, notification, demande_id))
+
     db.commit()
     db.close()
 
-    return jsonify({'message': 'Statut mis à jour'})
+    return jsonify({"message": "Statut mis à jour"})
 
 @app.route("/demande_document", methods=["POST"])
 def demande_document():
@@ -319,7 +329,7 @@ def mes_demandes(citoyen_id):
     c = db.cursor()
 
     c.execute("""
-        SELECT id, type_demande, statut, document
+        SELECT id, type_demande, statut, document, notification
         FROM demandes
         WHERE citoyen_id = ?
     """, (citoyen_id,))
@@ -327,7 +337,7 @@ def mes_demandes(citoyen_id):
     demandes = c.fetchall()
     db.close()
 
-    return jsonify(demandes)
+    return render_template("mes_demandes.html", demandes=demandes)
 
 @app.route("/mes_demandes")
 def page_mes_demandes():

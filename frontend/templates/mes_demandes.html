@@ -15,11 +15,26 @@
             <th>Type de demande</th>
             <th>Statut</th>
             <th>Document</th>
+            <th>Notification</th>
         </tr>
     </thead>
 
-    <tbody id="listeDemandes">
-
+    <tbody>
+    {% for d in demandes %}
+        <tr>
+            <td>{{ d[0] }}</td>
+            <td>{{ d[1] }}</td>
+            <td>{{ d[2] }}</td>
+            <td>{{ d[3] }}</td>
+            <td>
+                {% if d[4] %}
+                    {{ d[4] }}
+                {% else %}
+                    Aucune notification
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
     </tbody>
 </table>
 
@@ -28,8 +43,6 @@
 <a href="/espace">
     <button>Retour à l'espace citoyen</button>
 </a>
-
-<script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
 </html>
