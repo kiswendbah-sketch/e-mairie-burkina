@@ -88,6 +88,7 @@ def connexion():
     db.close()
 
     if row and bcrypt.check_password_hash(row[3], mot_de_passe):
+        session['citoyen_id'] = row[0]
         return jsonify({'message': 'Connexion réussie', 'id': row[0]})
 
     return jsonify({'message': 'Email ou mot de passe incorrect'}), 401
@@ -191,38 +192,35 @@ def admin_logout():
 @app.route('/admin/modifier_statut', methods=['POST'])
 def modifier_statut():
     data = request.get_json(silent=True) or {}
-    demande_id = data.get('demande_id')
-    statut = data.get('statut')
-    
-    db = get_db()
-    c = db.cursor()
+    print(data)  # <-- ajoute cette ligne
 
-    c.execute("UPDATE demandes SET statut = ? WHERE id = ?", (statut, demande_id))
-    db.commit()
-    db.close()
+    demande_id = data.get("demande_id")
+    statut = data.get("statut")
 
-    return jsonify({'message': 'Statut mis à jour'})
+    if not demande_id or not statut:
+        return jsonify({"message": "Paramètres manquants"}), 400
 
-    if not demande_id or statut is None:
-        return jsonify({'message': 'Paramètres manquants'}), 400
-
-    db = get_db()
-    c = db.cursor()
     if statut == "Acceptée":
         notification = "Votre demande a été acceptée."
     else:
         notification = "Votre demande a été refusée."
 
+    print(notification)  # <-- ajoute cette ligne
+
+    db = get_db()
+    c = db.cursor()
+
     c.execute("""
-    UPDATE demandes
-    SET statut = ?, notification = ?
-    WHERE id = ?
-        """, (statut, notification, demande_id))
+        UPDATE demandes
+        SET statut = ?, notification = ?
+        WHERE id = ?
+    """, (statut, notification, demande_id))
 
     db.commit()
     db.close()
 
     return jsonify({"message": "Statut mis à jour"})
+
 
 @app.route("/demande_document", methods=["POST"])
 def demande_document():
@@ -335,13 +333,32 @@ def mes_demandes(citoyen_id):
     """, (citoyen_id,))
 
     demandes = c.fetchall()
+    print("Citoyen ID:", citoyen_id)
+    print("Demandes:", demandes)
     db.close()
 
     return render_template("mes_demandes.html", demandes=demandes)
 
 @app.route("/mes_demandes")
 def page_mes_demandes():
-    return render_template("mes_demandes.html")
+
+    if "citoyen_id" not in session:
+        return redirect("/connexion")
+
+    db = get_db()
+    c = db.cursor()
+
+    c.execute("""
+        SELECT id, type_demande, statut, document, notification
+        FROM demandes
+        WHERE citoyen_id = ?
+    """, (session["citoyen_id"],))
+
+    demandes = c.fetchall()
+
+    db.close()
+
+    return render_template("mes_demandes.html", demandes=demandes)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
