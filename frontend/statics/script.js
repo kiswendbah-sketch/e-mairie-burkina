@@ -1,156 +1,453 @@
+/* =========================
+   FONCTION UTILITAIRE
+========================= */
+
 function afficherMessage(id, message) {
     const element = document.getElementById(id);
+
     if (element) {
         element.textContent = message;
     }
 }
 
 
-function login() {
-    const email = document.getElementById("email")?.value.trim() || "";
-    const password = document.getElementById("password")?.value.trim() || "";
+/* =========================
+   CONNEXION CITOYEN
+========================= */
 
-    if (!email || !password) {
-        afficherMessage("resultat", "Veuillez remplir tous les champs.");
+function initialiserConnexion() {
+
+    const loginForm = document.getElementById("loginForm");
+
+    if (!loginForm) {
         return;
     }
 
-    fetch("/connexion", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            email: email,
-            mot_de_passe: password
-        })
-    })
-    .then(async response => {
-        const data = await response.json().catch(() => ({}));
-        if (!response.ok) {
-            throw new Error(data.message || "Erreur de connexion");
-        }
-        return data;
-    })
-    .then(data => {
-        afficherMessage("resultat", data.message || "Connexion réussie");
+    loginForm.addEventListener("submit", async function (e) {
 
-        if (data.id) {
-            localStorage.setItem("citoyen_id", data.id);
-            window.location.href = "espace";
+        e.preventDefault();
+
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if (!email || !password) {
+            alert("Veuillez remplir tous les champs.");
+            return;
         }
-    })
-    .catch(error => {
-        afficherMessage("resultat", error.message || "Impossible de joindre le serveur.");
+
+        try {
+
+            const response = await fetch("/connexion", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    mot_de_passe: password
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Erreur de connexion"
+                );
+            }
+
+            alert(data.message);
+
+            if (data.id) {
+
+                localStorage.setItem(
+                    "citoyen_id",
+                    data.id
+                );
+
+                window.location.href = "/espace";
+            }
+
+        } catch (error) {
+
+            console.error("Erreur connexion :", error);
+
+            alert(error.message);
+        }
+
     });
 }
 
-document.getElementById("demandeForm")?.addEventListener("submit", function(e){
 
-    e.preventDefault();
+/* =========================
+   INSCRIPTION CITOYEN
+========================= */
 
-    const formData = new FormData();
+function initialiserInscription() {
 
-    formData.append("citoyen_id", localStorage.getItem("citoyen_id"));
-    formData.append("type_demande", document.getElementById("demande").value);
-    formData.append("document", document.getElementById("document").files[0]);
+    const registerForm =
+        document.getElementById("registerForm");
 
-    fetch("/demande_document", {
-        method: "POST",
-        body: formData
-    })
+    if (!registerForm) {
+        return;
+    }
 
-    .then(response => response.json())
+    registerForm.addEventListener("submit", async function (e) {
 
-    .then(data => {
-        document.getElementById("message").textContent = data.message;
-    })
+        e.preventDefault();
 
-    .catch(error => {
-        console.log(error);
-        document.getElementById("message").textContent = "Erreur lors de l'envoi.";
-    });
+        const nom =
+            document.getElementById("nom").value.trim();
 
-});
+        const email =
+            document.getElementById("email").value.trim();
 
-document.getElementById("registerForm")?.addEventListener("submit", function(e){
+        const password =
+            document.getElementById("password").value.trim();
 
-    e.preventDefault();
+        if (!nom || !email || !password) {
 
-    let nom = document.getElementById("nom").value;
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
+            alert("Veuillez remplir tous les champs.");
 
-
-    fetch("/inscription", {
-
-        method: "POST",
-
-        headers:{
-            "Content-Type":"application/json"
-        },
-
-        body: JSON.stringify({
-            nom: nom,
-            email: email,
-            mot_de_passe: password
-        })
-
-    })
-
-    .then(response => response.json())
-
-    .then(data => {
-
-        alert(data.message);
-
-    })
-
-    .catch(error => {
-
-        console.log(error);
-
-        alert("Erreur de connexion");
-
-    });
-
-});
-
-document.getElementById("loginForm")?.addEventListener("submit", function(e){
-
-    e.preventDefault();
-    console.log("connexion envoyée");
-
-    fetch("/connexion", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            email: document.getElementById("email").value,
-            mot_de_passe: document.getElementById("password").value
-        })
-    })
-
-    .then(response => response.json())
-
-    .then(data => {
-
-        alert(data.message);
-
-        if(data.id){
-            localStorage.setItem("citoyen_id", data.id);
-            window.location.href = "/espace";
+            return;
         }
 
-    })
+        try {
 
-    .catch(error => {
+            const response = await fetch("/inscription", {
 
-        console.log(error);
-        alert("Erreur de connexion");
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    nom: nom,
+                    email: email,
+                    mot_de_passe: password
+                })
+
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Erreur lors de l'inscription."
+                );
+            }
+
+            alert(data.message);
+
+            if (data.message === "Citoyen enregistré") {
+                window.location.href = "/connexion";
+            }
+
+        } catch (error) {
+
+            console.error("Erreur inscription :", error);
+
+            alert(error.message);
+        }
 
     });
+}
 
-});
 
+/* =========================
+   ENVOI D'UNE DEMANDE
+========================= */
+
+function initialiserDemande() {
+
+    const demandeForm =
+        document.getElementById("demandeForm");
+
+    if (!demandeForm) {
+        return;
+    }
+
+    demandeForm.addEventListener("submit", async function (e) {
+
+        e.preventDefault();
+
+        const typeDemande =
+            document.getElementById("demande").value;
+
+        const fichierInput =
+            document.getElementById("document");
+
+        const fichier =
+            fichierInput.files[0];
+
+        if (!fichier) {
+
+            afficherMessage(
+                "message",
+                "Veuillez sélectionner un document."
+            );
+
+            return;
+        }
+
+        const formData = new FormData();
+
+        formData.append(
+            "type_demande",
+            typeDemande
+        );
+
+        formData.append(
+            "document",
+            fichier
+        );
+
+        try {
+
+            const response = await fetch(
+                "/demande_document",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message ||
+                    "Erreur lors de l'envoi."
+                );
+            }
+
+            afficherMessage(
+                "message",
+                data.message
+            );
+
+            demandeForm.reset();
+
+            chargerStatistiques();
+            chargerNotifications();
+            chargerDernieresDemandes();
+
+        } catch (error) {
+
+            console.error("Erreur demande :", error);
+
+            afficherMessage(
+                "message",
+                error.message
+            );
+        }
+
+    });
+}
+
+
+/* =========================
+   STATISTIQUES CITOYEN
+========================= */
+
+async function chargerStatistiques() {
+
+    const total =
+        document.getElementById("total");
+
+    if (!total) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch("/citoyen/statistiques");
+
+        const data =
+            await response.json();
+
+        if (!response.ok || data.message) {
+            return;
+        }
+
+        document.getElementById("total").innerText =
+            data.total;
+
+        document.getElementById("attente").innerText =
+            data.attente;
+
+        document.getElementById("acceptees").innerText =
+            data.acceptees;
+
+        document.getElementById("refusees").innerText =
+            data.refusees;
+
+    } catch (error) {
+
+        console.error(
+            "Erreur statistiques :",
+            error
+        );
+    }
+}
+
+
+/* =========================
+   NOTIFICATIONS
+========================= */
+
+async function chargerNotifications() {
+
+    const liste =
+        document.getElementById("liste_notifications");
+
+    if (!liste) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch("/citoyen/notifications");
+
+        const data =
+            await response.json();
+
+        liste.innerHTML = "";
+
+        if (!data || data.length === 0) {
+
+            liste.innerHTML =
+                "<li>Aucune notification.</li>";
+
+            return;
+        }
+
+        data.forEach(notification => {
+
+            const li =
+                document.createElement("li");
+
+            li.textContent =
+                notification;
+
+            liste.appendChild(li);
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Erreur notifications :",
+            error
+        );
+    }
+}
+
+
+/* =========================
+   DERNIÈRES DEMANDES
+========================= */
+
+async function chargerDernieresDemandes() {
+
+    const tableau =
+        document.getElementById("listeDemandes");
+
+    if (!tableau) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch("/citoyen/dernieres_demandes");
+
+        const data =
+            await response.json();
+
+        tableau.innerHTML = "";
+
+        if (!data || data.length === 0) {
+
+            tableau.innerHTML = `
+                <tr>
+                    <td colspan="3" class="text-center">
+                        Aucune demande.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        data.forEach(demande => {
+
+            const ligne =
+                document.createElement("tr");
+
+            const type =
+                document.createElement("td");
+
+            const statut =
+                document.createElement("td");
+
+            const notification =
+                document.createElement("td");
+
+            type.textContent =
+                demande.type;
+
+            statut.textContent =
+                demande.statut;
+
+            notification.textContent =
+                demande.notification || "";
+
+            ligne.appendChild(type);
+            ligne.appendChild(statut);
+            ligne.appendChild(notification);
+
+            tableau.appendChild(ligne);
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Erreur dernières demandes :",
+            error
+        );
+    }
+}
+
+
+/* =========================
+   INITIALISATION
+========================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        initialiserConnexion();
+
+        initialiserInscription();
+
+        initialiserDemande();
+
+        if (
+            window.location.pathname === "/espace"
+        ) {
+
+            chargerStatistiques();
+
+            chargerNotifications();
+
+            chargerDernieresDemandes();
+        }
+
+    }
+);

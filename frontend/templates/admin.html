@@ -1,289 +1,836 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Administration</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Administration - e-Mairie Burkina</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+
+        body {
+            background: #f4f6f9;
+        }
+
+        .dashboard-title {
+            font-weight: bold;
+        }
+
+        .stat-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .table th {
+            white-space: nowrap;
+        }
+
+        .action-buttons {
+            min-width: 220px;
+        }
+
+        @media (max-width: 768px) {
+
+            .container {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .dashboard-title {
+                font-size: 25px;
+            }
+
+            .stat-card {
+                margin-bottom: 12px;
+            }
+
+            .admin-actions {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .admin-actions a {
+                width: 100%;
+            }
+
+            #recherche {
+                width: 100% !important;
+                margin-top: 10px;
+            }
+
+            .filter-container {
+                width: 100%;
+            }
+
+            .filter-container select {
+                width: 100% !important;
+                margin-top: 5px;
+            }
+
+        }
+
+    </style>
+
 </head>
 
-<body class="bg-light">
 
-<div class="container mt-4">
+<body>
 
-<h2 class="text-center mb-4">Tableau de bord Administrateur</h2>
+<div class="container py-4">
 
-<div class="row mb-4">
 
-<div class="col-md-3">
-<div class="card text-center">
-<div class="card-body">
-<h5>Total</h5>
-<h2 id="total">0</h2>
+    <!-- =========================================
+         TITRE
+    ========================================== -->
+
+    <div class="text-center mb-4">
+
+        <h2 class="dashboard-title">
+            🏛️ Tableau de bord Administrateur
+        </h2>
+
+        <p class="text-muted">
+            Gestion des demandes et des citoyens
+        </p>
+
+    </div>
+
+
+    <!-- =========================================
+         STATISTIQUES
+    ========================================== -->
+
+    <div class="row mb-4">
+
+
+        <!-- TOTAL -->
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card stat-card text-center">
+
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        📊 Total
+                    </h6>
+
+                    <div id="total"
+                         class="stat-number">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- EN ATTENTE -->
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card stat-card text-center">
+
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        ⏳ En attente
+                    </h6>
+
+                    <div id="attente"
+                         class="stat-number">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACCEPTEES -->
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card stat-card text-center">
+
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        ✅ Acceptées
+                    </h6>
+
+                    <div id="acceptees"
+                         class="stat-number">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- REFUSEES -->
+
+        <div class="col-md-3 col-6 mb-3">
+
+            <div class="card stat-card text-center">
+
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        ❌ Refusées
+                    </h6>
+
+                    <div id="refusees"
+                         class="stat-number">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         ACTIONS ADMINISTRATEUR
+    ========================================== -->
+
+    <div class="card stat-card mb-4">
+
+        <div class="card-body">
+
+            <div class="admin-actions">
+
+                <a href="/admin/citoyens"
+                   class="btn btn-primary">
+
+                    👥 Gestion des citoyens
+
+                </a>
+
+
+                <a href="/admin/logout"
+                   class="btn btn-danger">
+
+                    🚪 Déconnexion
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         RECHERCHE
+    ========================================== -->
+
+    <div class="card stat-card mb-4">
+
+        <div class="card-body">
+
+            <div class="row g-3 align-items-center">
+
+
+                <div class="col-md-8">
+
+                    <label class="form-label fw-bold">
+                        🔎 Rechercher
+                    </label>
+
+                    <input
+                        type="text"
+                        id="recherche"
+                        class="form-control"
+                        placeholder="Rechercher un citoyen, une demande..."
+                        onkeyup="rechercher()">
+
+                </div>
+
+
+                <div class="col-md-4 filter-container">
+
+                    <label class="form-label fw-bold">
+                        📌 Filtrer par statut
+                    </label>
+
+                    <select
+                        id="filtre"
+                        onchange="filtrerStatut()"
+                        class="form-select">
+
+                        <option value="">
+                            Tous les statuts
+                        </option>
+
+                        <option value="En attente">
+                            ⏳ En attente
+                        </option>
+
+                        <option value="Acceptée">
+                            ✅ Acceptée
+                        </option>
+
+                        <option value="Refusée">
+                            ❌ Refusée
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         LISTE DES DEMANDES
+    ========================================== -->
+
+    <div class="table-container">
+
+        <h4 class="mb-3">
+            📋 Liste des demandes
+        </h4>
+
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Date</th>
+
+                        <th>ID</th>
+
+                        <th>Citoyen</th>
+
+                        <th>Document</th>
+
+                        <th>Fichier</th>
+
+                        <th>Statut</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="tableDemandes">
+
+                {% for d in demandes %}
+
+                    <tr>
+
+
+                        <!-- DATE -->
+
+                        <td>
+                            {{ d[5] }}
+                        </td>
+
+
+                        <!-- ID -->
+
+                        <td>
+                            <strong>
+                                #{{ d[0] }}
+                            </strong>
+                        </td>
+
+
+                        <!-- CITOYEN / TYPE -->
+
+                        <td>
+
+                            <strong>
+                                {{ d[1] }}
+                            </strong>
+
+                            <br>
+
+                            <small class="text-muted">
+                                {{ d[2] }}
+                            </small>
+
+                        </td>
+
+
+                        <!-- DOCUMENT -->
+
+                        <td>
+
+                            {% if d[4] %}
+
+                                <a href="/uploads/{{ d[4] }}"
+                                   target="_blank"
+                                   class="btn btn-outline-primary btn-sm">
+
+                                    📥 Voir
+
+                                </a>
+
+                            {% else %}
+
+                                <span class="text-muted">
+                                    Aucun fichier
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- NOM DU FICHIER -->
+
+                        <td>
+
+                            {% if d[4] %}
+
+                                <small>
+                                    {{ d[4] }}
+                                </small>
+
+                            {% else %}
+
+                                <span class="text-muted">
+                                    Aucun fichier
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- STATUT -->
+
+                        <td>
+
+                            {% if d[3] == "Acceptée" %}
+
+                                <span class="badge bg-success">
+                                    ✓ Acceptée
+                                </span>
+
+                            {% elif d[3] == "Refusée" %}
+
+                                <span class="badge bg-danger">
+                                    ✕ Refusée
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-warning text-dark">
+                                    ⏳ En attente
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- ACTIONS -->
+
+                        <td class="action-buttons">
+
+
+                            <a href="/admin/demande/{{ d[0] }}"
+                               class="btn btn-primary btn-sm mb-1">
+
+                                👁️ Voir
+
+                            </a>
+
+
+                            <button
+                                class="btn btn-success btn-sm mb-1"
+                                onclick="modifierStatut('{{ d[0] }}','Acceptée')">
+
+                                ✓ Accepter
+
+                            </button>
+
+
+                            <button
+                                class="btn btn-danger btn-sm mb-1"
+                                onclick="modifierStatut('{{ d[0] }}','Refusée')">
+
+                                ✕ Refuser
+
+                            </button>
+
+
+                            <button
+                                class="btn btn-dark btn-sm mb-1"
+                                onclick="supprimerDemande('{{ d[0] }}')">
+
+                                🗑️ Supprimer
+
+                            </button>
+
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         AUCUNE DEMANDE
+    ========================================== -->
+
+    {% if not demandes %}
+
+        <div class="alert alert-info text-center mt-4">
+
+            📭 Aucune demande enregistrée.
+
+        </div>
+
+    {% endif %}
+
+
 </div>
-</div>
-</div>
 
-<div class="col-md-3">
-<div class="card text-center">
-<div class="card-body">
-<h5>En attente</h5>
-<h2 id="attente">0</h2>
-</div>
-</div>
-</div>
 
-<div class="col-md-3">
-<div class="card text-center">
-<div class="card-body">
-<h5>Acceptées</h5>
-<h2 id="acceptees">0</h2>
-</div>
-</div>
-</div>
 
-<div class="col-md-3">
-<div class="card text-center">
-<div class="card-body">
-<h5>Refusées</h5>
-<h2 id="refusees">0</h2>
-</div>
-</div>
-</div>
-
-</div>
-
-<div class="d-flex justify-content-between mb-3">
-
-<a href="/admin/logout" class="btn btn-danger">
-Déconnexion
-</a>
-
-<input
-type="text"
-id="recherche"
-class="form-control w-50"
-placeholder="Rechercher un citoyen..."
-onkeyup="rechercher()">
-
-</div>
-
-<div class="mb-3">
-
-<label class="me-2">Filtrer :</label>
-
-<select id="filtre" onchange="filtrerStatut()" class="form-select w-auto d-inline">
-
-<option value="">Tous</option>
-<option value="En attente">En attente</option>
-<option value="Acceptée">Acceptée</option>
-<option value="Refusée">Refusée</option>
-
-</select>
-
-</div>
-
-<table class="table table-bordered table-hover">
-
-<thead class="table-dark">
-
-<tr>
-
-<th>ID</th>
-<th>Citoyen</th>
-<th>Document</th>
-<th>Fichier</th>
-<th>Statut</th>
-<th>Actions</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{% for d in demandes %}
-
-<tr>
-
-<td>{{ d[0] }}</td>
-
-<td>{{ d[1] }}</td>
-
-<td>{{ d[2] }}</td>
-
-<td>
-
-{% if d[4] %}
-<a href="/uploads/{{ d[4] }}" target="_blank">Télécharger</a>
-{% else %}
-Aucun fichier
-{% endif %}
-
-</td>
-
-<td>
-
-{% if d[3]=="Acceptée" %}
-
-<span class="badge bg-success">{{ d[3] }}</span>
-
-{% elif d[3]=="Refusée" %}
-
-<span class="badge bg-danger">{{ d[3] }}</span>
-
-{% else %}
-
-<span class="badge bg-warning text-dark">{{ d[3] }}</span>
-
-{% endif %}
-
-</td>
-
-<td>
-
-<button class="btn btn-success btn-sm"
-onclick="modifierStatut('{{ d[0] }}','Acceptée')">
-
-Accepter
-
-</button>
-
-<button class="btn btn-danger btn-sm"
-onclick="modifierStatut('{{ d[0] }}','Refusée')">
-
-Refuser
-
-</button>
-
-<button class="btn btn-dark btn-sm"
-onclick="supprimerDemande('{{ d[0] }}')">
-
-Supprimer
-
-</button>
-
-</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
-</div>
+<!-- =========================================
+     JAVASCRIPT
+========================================== -->
 
 <script>
 
-function modifierStatut(id, statut){
 
-fetch("/admin/modifier_statut",{
+/* =========================================
+   MODIFIER LE STATUT
+========================================= */
 
-method:"POST",
+function modifierStatut(id, statut) {
 
-headers:{
-"Content-Type":"application/json"
-},
+    const message =
+        statut === "Acceptée"
+        ? "Accepter cette demande ?"
+        : "Refuser cette demande ?";
 
-body:JSON.stringify({
-demande_id:id,
-statut:statut
-})
+    if (!confirm(message)) {
+        return;
+    }
 
-})
 
-.then(r=>r.json())
+    fetch("/admin/modifier_statut", {
 
-.then(data=>{
-alert(data.message);
-location.reload();
-});
+        method: "POST",
 
-}
+        headers: {
+            "Content-Type": "application/json"
+        },
 
-function supprimerDemande(id){
+        body: JSON.stringify({
 
-if(!confirm("Supprimer cette demande ?"))
-return;
+            demande_id: id,
+            statut: statut
 
-fetch("/admin/supprimer/"+id,{
-method:"POST"
-})
+        })
 
-.then(r=>r.json())
+    })
 
-.then(data=>{
-alert(data.message);
-location.reload();
-});
+    .then(async response => {
 
-}
+        const data = await response.json();
 
-function rechercher(){
+        if (!response.ok) {
 
-let filtre=document.getElementById("recherche").value.toLowerCase();
+            throw new Error(
+                data.message || "Erreur"
+            );
 
-let lignes=document.querySelectorAll("tbody tr");
+        }
 
-lignes.forEach(ligne=>{
+        return data;
 
-if(ligne.innerText.toLowerCase().includes(filtre))
-ligne.style.display="";
+    })
 
-else
-ligne.style.display="none";
+    .then(data => {
 
-});
+        alert(data.message);
 
-}
+        location.reload();
 
-function filtrerStatut(){
+    })
 
-let valeur=document.getElementById("filtre").value;
+    .catch(error => {
 
-let lignes=document.querySelectorAll("tbody tr");
+        console.error(error);
 
-lignes.forEach(ligne=>{
+        alert(error.message);
 
-let statut=ligne.cells[4].innerText.trim();
-
-if(valeur=="" || statut==valeur)
-
-ligne.style.display="";
-
-else
-
-ligne.style.display="none";
-
-});
+    });
 
 }
 
-function chargerStatistiques(){
 
-fetch("/admin/statistiques")
 
-.then(r=>r.json())
+/* =========================================
+   SUPPRIMER UNE DEMANDE
+========================================= */
 
-.then(data=>{
+function supprimerDemande(id) {
 
-document.getElementById("total").innerText=data.total;
+    if (!confirm(
+        "⚠️ Voulez-vous vraiment supprimer cette demande ?"
+    )) {
 
-document.getElementById("attente").innerText=data.en_attente;
+        return;
 
-document.getElementById("acceptees").innerText=data.acceptees;
+    }
 
-document.getElementById("refusees").innerText=data.refusees;
 
-});
+    fetch("/admin/supprimer/" + id, {
+
+        method: "POST"
+
+    })
+
+    .then(async response => {
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message || "Erreur"
+            );
+
+        }
+
+        return data;
+
+    })
+
+    .then(data => {
+
+        alert(data.message);
+
+        location.reload();
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        alert(error.message);
+
+    });
 
 }
+
+
+
+/* =========================================
+   RECHERCHE
+========================================= */
+
+function rechercher() {
+
+    const valeur =
+        document
+        .getElementById("recherche")
+        .value
+        .toLowerCase()
+        .trim();
+
+
+    const lignes =
+        document.querySelectorAll(
+            "#tableDemandes tr"
+        );
+
+
+    lignes.forEach(ligne => {
+
+        const texte =
+            ligne.innerText.toLowerCase();
+
+
+        if (texte.includes(valeur)) {
+
+            ligne.style.display = "";
+
+        } else {
+
+            ligne.style.display = "none";
+
+        }
+
+    });
+
+}
+
+
+
+/* =========================================
+   FILTRE STATUT
+========================================= */
+
+function filtrerStatut() {
+
+    const valeur =
+        document
+        .getElementById("filtre")
+        .value;
+
+
+    const lignes =
+        document.querySelectorAll(
+            "#tableDemandes tr"
+        );
+
+
+    lignes.forEach(ligne => {
+
+        const statut =
+            ligne.cells[5]
+            .innerText
+            .trim();
+
+
+        if (
+            valeur === "" ||
+            statut.includes(valeur)
+        ) {
+
+            ligne.style.display = "";
+
+        } else {
+
+            ligne.style.display = "none";
+
+        }
+
+    });
+
+}
+
+
+
+/* =========================================
+   STATISTIQUES
+========================================= */
+
+function chargerStatistiques() {
+
+    fetch("/admin/statistiques")
+
+    .then(async response => {
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message || "Erreur"
+            );
+
+        }
+
+        return data;
+
+    })
+
+    .then(data => {
+
+        document.getElementById("total")
+            .innerText = data.total;
+
+        document.getElementById("attente")
+            .innerText = data.en_attente;
+
+        document.getElementById("acceptees")
+            .innerText = data.acceptees;
+
+        document.getElementById("refusees")
+            .innerText = data.refusees;
+
+    })
+
+    .catch(error => {
+
+        console.error(
+            "Erreur statistiques :",
+            error
+        );
+
+    });
+
+}
+
 
 chargerStatistiques();
 
+
 </script>
 
+
 </body>
+
 </html>

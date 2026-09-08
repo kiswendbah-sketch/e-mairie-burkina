@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Détail de la demande</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+</head>
+
+
+<body class="bg-light">
+
+
+<div class="container mt-4 mb-5">
+
+
+    <!-- =========================
+         TITRE
+    ========================== -->
+
+    <h2 class="mb-4">
+        📄 Détail de la demande
+    </h2>
+
+
+    <!-- =========================
+         INFORMATIONS
+    ========================== -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+
+            <p>
+                <strong>ID :</strong>
+                {{ demande[0] }}
+            </p>
+
+
+            <p>
+                <strong>Citoyen :</strong>
+                {{ demande[1] }}
+            </p>
+
+
+            <p>
+                <strong>Email :</strong>
+                {{ demande[2] }}
+            </p>
+
+
+            <p>
+                <strong>Type de demande :</strong>
+                {{ demande[3] }}
+            </p>
+
+
+            <!-- =========================
+                 STATUT
+            ========================== -->
+
+            <p>
+
+                <strong>Statut :</strong>
+
+                {% if demande[4] == "Acceptée" %}
+
+                    <span class="badge bg-success">
+                        ✓ Acceptée
+                    </span>
+
+                {% elif demande[4] == "Refusée" %}
+
+                    <span class="badge bg-danger">
+                        ✕ Refusée
+                    </span>
+
+                {% else %}
+
+                    <span class="badge bg-warning text-dark">
+                        ⏳ En attente
+                    </span>
+
+                {% endif %}
+
+            </p>
+
+
+            <!-- =========================
+                 DOCUMENT DU CITOYEN
+            ========================== -->
+
+            <hr>
+
+            <h5 class="mb-3">
+                📎 Document envoyé par le citoyen
+            </h5>
+
+
+            {% if demande[5] %}
+
+                <a
+                    href="/uploads/{{ demande[5] }}"
+                    target="_blank"
+                    class="btn btn-primary">
+
+                    📥 Voir le document
+
+                </a>
+
+            {% else %}
+
+                <p class="text-muted">
+                    Aucun document envoyé.
+                </p>
+
+            {% endif %}
+
+
+            <!-- =========================
+                 DATE
+            ========================== -->
+
+            <hr>
+
+            <p>
+
+                <strong>📅 Date de la demande :</strong>
+
+                {{ demande[6] }}
+
+            </p>
+
+
+            <!-- =========================
+                 NOTIFICATION
+            ========================== -->
+
+            <p>
+
+                <strong>🔔 Notification :</strong>
+
+                {% if demande[7] %}
+
+                    <span>
+                        {{ demande[7] }}
+                    </span>
+
+                {% else %}
+
+                    <span class="text-muted">
+                        Aucune notification
+                    </span>
+
+                {% endif %}
+
+            </p>
+
+
+            <!-- =========================
+                 DOCUMENT FINAL
+            ========================== -->
+
+            <hr>
+
+            <h5 class="mb-3">
+                📄 Document officiel de la mairie
+            </h5>
+
+
+            {% if demande[8] %}
+
+                <div class="alert alert-success">
+
+                    ✅ Le document final a été déposé.
+
+                    <br><br>
+
+                    <a
+                        href="/uploads/{{ demande[8] }}"
+                        target="_blank"
+                        class="btn btn-success">
+
+                        📥 Télécharger le document final
+
+                    </a>
+
+                </div>
+
+
+            {% else %}
+
+
+                {% if demande[4] == "Acceptée" %}
+
+                    <div class="card bg-light">
+
+                        <div class="card-body">
+
+                            <h6>
+                                📤 Déposer le document officiel
+                            </h6>
+
+                            <p class="text-muted">
+                                Ce document sera ensuite disponible
+                                pour le citoyen.
+                            </p>
+
+
+                            <form
+                                id="documentFinalForm"
+                                enctype="multipart/form-data">
+
+
+                                <input
+                                    type="hidden"
+                                    id="demande_id"
+                                    value="{{ demande[0] }}">
+
+
+                                <div class="mb-3">
+
+                                    <label
+                                        for="document_final"
+                                        class="form-label">
+
+                                        Choisir le document final
+
+                                    </label>
+
+                                    <input
+                                        type="file"
+                                        class="form-control"
+                                        id="document_final"
+                                        name="document_final"
+                                        required>
+
+                                </div>
+
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-success">
+
+                                    📤 Déposer le document
+
+                                </button>
+
+                            </form>
+
+
+                            <div
+                                id="messageDocument"
+                                class="mt-3">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="alert alert-warning">
+
+                        ⚠️ Le document final pourra être déposé
+                        lorsque la demande sera acceptée.
+
+                    </div>
+
+                {% endif %}
+
+            {% endif %}
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         RETOUR
+    ========================== -->
+
+    <div class="mt-4">
+
+        <a
+            href="/admin/demandes"
+            class="btn btn-secondary">
+
+            ← Retour aux demandes
+
+        </a>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+const formulaire =
+    document.getElementById("documentFinalForm");
+
+
+if (formulaire) {
+
+    formulaire.addEventListener("submit", function(e) {
+
+        e.preventDefault();
+
+
+        const fichier =
+            document.getElementById("document_final").files[0];
+
+        const demandeId =
+            document.getElementById("demande_id").value;
+
+        const message =
+            document.getElementById("messageDocument");
+
+
+        if (!fichier) {
+
+            message.innerHTML = `
+                <div class="alert alert-warning">
+                    ⚠️ Veuillez choisir un fichier.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        const formData = new FormData();
+
+        formData.append(
+            "demande_id",
+            demandeId
+        );
+
+        formData.append(
+            "document_final",
+            fichier
+        );
+
+
+        fetch(
+            "/admin/deposer_document_final",
+            {
+                method: "POST",
+                body: formData
+            }
+        )
+
+
+        .then(async response => {
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Erreur lors du dépôt."
+                );
+
+            }
+
+
+            return data;
+
+        })
+
+
+        .then(data => {
+
+            message.innerHTML = `
+                <div class="alert alert-success">
+                    ✅ ${data.message}
+                </div>
+            `;
+
+
+            setTimeout(function() {
+
+                window.location.reload();
+
+            }, 1000);
+
+        })
+
+
+        .catch(error => {
+
+            console.error(error);
+
+
+            message.innerHTML = `
+                <div class="alert alert-danger">
+                    ❌ ${error.message}
+                </div>
+            `;
+
+        });
+
+    });
+
+}
+
+</script>
+
+
+</body>
+
+</html>

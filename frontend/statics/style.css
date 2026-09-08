@@ -43,3 +43,364 @@ button:hover {
     margin-top: 12px;
     color: #2c7be5;
 }
+
+/* ================================
+   ESPACE CITOYEN - VERSION MOBILE
+================================ */
+
+@media (max-width: 768px) {
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: #f5f7fa;
+    }
+
+    .container {
+        width: 94%;
+        margin: 15px auto;
+    }
+
+    h1 {
+        font-size: 24px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin-top: 20px;
+    }
+
+    /* Cartes statistiques */
+
+    .stats,
+    .statistiques {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .stat-card,
+    .statistiques > div {
+        padding: 15px 8px;
+        text-align: center;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .stat-card h3 {
+        font-size: 14px;
+        margin: 0 0 8px;
+    }
+
+    .stat-card strong {
+        font-size: 24px;
+    }
+
+    /* Notifications */
+
+    #liste_notifications {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    #liste_notifications li {
+        background: #e8f7ff;
+        padding: 12px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+    }
+
+    /* Formulaire */
+
+    #demandeForm {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 15px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    #demandeForm select,
+    #demandeForm input[type="file"] {
+        width: 100%;
+        margin: 8px 0 15px;
+        box-sizing: border-box;
+    }
+
+    #demandeForm button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    /* Dernières demandes */
+
+    #listeDemandes {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+    #listeDemandes th,
+    #listeDemandes td {
+        padding: 10px 6px;
+        border-bottom: 1px solid #ddd;
+        font-size: 13px;
+        text-align: left;
+    }
+
+    /* Boutons */
+
+    button,
+    a {
+        min-height: 40px;
+    }
+
+}
+
+/* ================================
+   CONNEXION CITOYEN - MOBILE
+================================ */
+
+#loginForm {
+    width: 90%;
+    max-width: 420px;
+    margin: 40px auto;
+    padding: 25px;
+    box-sizing: border-box;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+}
+
+#loginForm input {
+    width: 100%;
+    height: 48px;
+    margin: 8px 0 15px;
+    padding: 0 12px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    font-size: 16px;
+}
+
+#loginForm button {
+    width: 100%;
+    height: 48px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 7px;
+    background: #1976d2;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#loginForm button:active {
+    transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+
+    #loginForm {
+        width: 92%;
+        margin: 30px auto;
+        padding: 25px 20px;
+    }
+
+    #loginForm input {
+        height: 50px;
+        font-size: 16px;
+    }
+
+    #loginForm button {
+        height: 50px;
+        font-size: 17px;
+    }
+}
+
+/* =================================
+   ESPACE CITOYEN - DESIGN MOBILE
+================================= */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f7fa;
+    color: #222;
+}
+
+h1, h2, h3 {
+    margin-top: 15px;
+}
+
+/* Bienvenue */
+
+h1 {
+    padding: 15px;
+    margin: 0;
+    background: #1976d2;
+    color: white;
+    font-size: 22px;
+}
+
+/* Zone principale */
+
+main {
+    width: 94%;
+    max-width: 1000px;
+    margin: 20px auto;
+}
+
+/* =================================
+   STATISTIQUES
+================================= */
+
+#total,
+#attente,
+#acceptees,
+#refusees {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.statistiques,
+.stats,
+.cards {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* =================================
+   NOTIFICATIONS
+================================= */
+
+#liste_notifications {
+    background: #dff6ff;
+    border-left: 5px solid #17a2b8;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+#liste_notifications li {
+    margin: 5px 0;
+}
+
+/* =================================
+   FORMULAIRE DEMANDE
+================================= */
+
+#demandeForm {
+    background: white;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+#demandeForm select,
+#demandeForm input[type="file"] {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 8px 0 15px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+#demandeForm button {
+    width: 100%;
+    padding: 12px;
+    background: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* =================================
+   DERNIÈRES DEMANDES
+================================= */
+
+#listeDemandes {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+#listeDemandes th,
+#listeDemandes td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+#listeDemandes th {
+    background: #1976d2;
+    color: white;
+}
+
+/* =================================
+   BOUTONS
+================================= */
+
+button,
+a {
+    font-size: 15px;
+}
+
+@media (max-width: 768px) {
+
+    main {
+        width: 94%;
+        margin: 10px auto;
+    }
+
+    h1 {
+        font-size: 20px;
+        padding: 15px 10px;
+    }
+
+    /* Les cartes statistiques */
+
+    .statistiques,
+    .stats,
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    /* Tableau adapté au téléphone */
+
+    #listeDemandes {
+        font-size: 13px;
+    }
+
+    #listeDemandes th,
+    #listeDemandes td {
+        padding: 8px 5px;
+    }
+
+    /* Formulaire */
+
+    #demandeForm {
+        padding: 15px;
+    }
+
+    #demandeForm select,
+    #demandeForm input[type="file"] {
+        font-size: 16px;
+    }
+
+}

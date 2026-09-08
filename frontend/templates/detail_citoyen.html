@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Détails du citoyen</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+
+        body {
+            background: #f4f6f9;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .info-card {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        @media (max-width: 768px) {
+
+            .container {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container py-4">
+
+
+    <!-- TITRE -->
+
+    <div class="text-center mb-4">
+
+        <h2>
+            👤 Détails du citoyen
+        </h2>
+
+        <p class="text-muted">
+            Informations et demandes
+        </p>
+
+    </div>
+
+
+    <!-- INFORMATIONS CITOYEN -->
+
+    <div class="card info-card mb-4">
+
+        <div class="card-body">
+
+            <h4 class="mb-3">
+                👤 {{ citoyen[1] }}
+            </h4>
+
+            <p class="mb-2">
+                <strong>🆔 ID :</strong>
+                #{{ citoyen[0] }}
+            </p>
+
+            <p class="mb-0">
+                <strong>📧 Email :</strong>
+                {{ citoyen[2] }}
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- DEMANDES -->
+
+    <div class="main-card">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <h4 class="mb-0">
+                📋 Demandes
+            </h4>
+
+            <span class="badge bg-primary">
+                {{ demandes|length }}
+            </span>
+
+        </div>
+
+
+        {% if demandes %}
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Statut</th>
+                        <th>Document envoyé</th>
+                        <th>Date</th>
+                        <th>Document officiel</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for demande in demandes %}
+
+                    <tr>
+
+                        <td>
+                            #{{ demande[0] }}
+                        </td>
+
+
+                        <td>
+                            {{ demande[1] }}
+                        </td>
+
+
+                        <td>
+
+                            {% if demande[2] == "Acceptée" %}
+
+                                <span class="badge bg-success">
+                                    Acceptée
+                                </span>
+
+                            {% elif demande[2] == "Refusée" %}
+
+                                <span class="badge bg-danger">
+                                    Refusée
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-warning text-dark">
+                                    En attente
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if demande[3] %}
+
+                                <a href="/uploads/{{ demande[3] }}"
+                                   class="btn btn-outline-primary btn-sm"
+                                   target="_blank">
+
+                                    📄 Voir
+
+                                </a>
+
+                            {% else %}
+
+                                <span class="text-muted">
+                                    Aucun
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {{ demande[5] or "Non disponible" }}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if demande[6] %}
+
+                                <a href="/uploads/{{ demande[6] }}"
+                                   class="btn btn-success btn-sm"
+                                   target="_blank">
+
+                                    📥 Télécharger
+
+                                </a>
+
+                            {% else %}
+
+                                <span class="text-muted">
+                                    Aucun document
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="alert alert-info text-center">
+
+            📭 Ce citoyen n'a encore envoyé aucune demande.
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- RETOUR -->
+
+    <div class="mt-4">
+
+        <a href="/admin/citoyens"
+           class="btn btn-secondary">
+
+            ← Retour aux citoyens
+
+        </a>
+
+    </div>
+
+
+</div>
+
+</body>
+
+</html>

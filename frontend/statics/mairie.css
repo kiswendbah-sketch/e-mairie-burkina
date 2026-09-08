@@ -8,3 +8,66 @@ button {
     padding: 10px;
     margin: 10px;
 }
+
+/* =========================
+   ADAPTATION MOBILE
+========================= */
+
+@media (max-width: 768px) {
+
+    body {
+        padding: 15px;
+        font-size: 15px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    h3 {
+        font-size: 20px;
+    }
+
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .col-md-3 {
+        width: 50%;
+        margin-bottom: 15px;
+    }
+
+    .card {
+        margin-bottom: 10px;
+    }
+
+    .card h2 {
+        font-size: 28px;
+    }
+
+    #demandeForm {
+        width: 100%;
+    }
+
+    #demande,
+    #document {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    button,
+    .btn {
+        margin-bottom: 8px;
+    }
+
+    .table {
+        font-size: 13px;
+    }
+
+    /* Permet de faire défiler les tableaux horizontalement */
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+}
