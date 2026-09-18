@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 import database
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+DATA_DIR = os.environ.get('DATA_DIR', BASE_DIR)
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'frontend', 'templates')
 STATICS_DIR = os.path.join(BASE_DIR, 'frontend', 'statics')
 
@@ -16,7 +17,8 @@ app = Flask(__name__, static_folder=STATICS_DIR, template_folder=TEMPLATES_DIR)
 app.secret_key = "e-Mairie-Burkina-2026"
 
 CORS(app)
-app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(__file__), 'uploads')
+UPLOAD_DIR = os.environ.get('UPLOAD_DIR', os.path.join(os.path.dirname(__file__), 'uploads'))
+app.config['UPLOAD_FOLDER'] = UPLOAD_DIR
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 #Taille maximale d'un fichier : 5 Mo
@@ -52,7 +54,7 @@ def accueil():
 
 
 def get_db():
-    chemin = os.path.join(BASE_DIR, 'mairie.db')
+    chemin = os.path.join(DATA_DIR, 'mairie.db')
     return sqlite3.connect(chemin)
 
 
